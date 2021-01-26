@@ -1,0 +1,38 @@
+{
+  "name": "hungnm1518/laravel-thumbnail",
+  "description": "Laravel Package to resize images on the fly",
+  "keywords": [
+    "Laravel",
+    "Image",
+    "Resize",
+    "Thumbnail"
+  ],
+  "require": {
+    "php": ">=7.4",
+    "illuminate/support": "^8.0",
+    "intervention/image": "^2.5"
+  },
+  "homepage": "https://github.com/hungnm1518/laravel-thumbnail",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hung Nguyen",
+      "email": "hungnm144@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "HungNM\\LaravelThumbnail\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "HungNM\\LaravelThumbnail\\LaravelThumbnailServiceProvider"
+      ],
+      "aliases": {
+        "Thumbnail": "HungNM\\LaravelThumbnail\\Facades\\LaravelThumbnail"
+      }
+    }
+  }
+}
