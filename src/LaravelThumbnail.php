@@ -20,6 +20,10 @@ class LaravelThumbnail
      */
     public static function generate($image, $width = null, $height = null, $type = 'fit')
     {
+		if (empty($image)) {
+			return Storage::disk('public')->url(config('thumb.default_img'));
+		}
+		
         $rootPath = config('thumb.root_path');
         $thumbPath = config('thumb.thumb_path');
 
