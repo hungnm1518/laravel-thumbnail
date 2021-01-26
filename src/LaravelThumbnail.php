@@ -39,7 +39,7 @@ class LaravelThumbnail
             if (in_array($contentType, $allowedMimeTypes)) {
                 //returns the original image if no width and height
                 if (is_null($width) && is_null($height)) {
-                    return Storage::disk('public')($image);
+                    return Storage::disk('public')->url($image);
                 }
 
                 //remove extension and add png extension
