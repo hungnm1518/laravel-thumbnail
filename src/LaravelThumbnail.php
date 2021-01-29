@@ -30,22 +30,22 @@ class LaravelThumbnail
         $image = ltrim(substr($image, strpos($image, '/', 1)), '/');
         $imagePublicPath = storage_path('app/public/' . $rootPath . $image);
 
-        //if path exists and is image
+        // if path exists and is image
         if (File::exists($imagePublicPath) && !File::isDirectory($imagePublicPath)) {
 
             $allowedMimeTypes = ['image/jpeg', 'image/gif', 'image/png'];
             $contentType = mime_content_type($imagePublicPath);
 
             if (in_array($contentType, $allowedMimeTypes)) {
-                //returns the original image if no width and height
+                // returns the original image if no width and height
                 if (is_null($width) && is_null($height)) {
                     return Storage::disk('public')->url($image);
                 }
 
-                //remove extension and add png extension
+                // remove extension and add png extension
                 $imageFilename = pathinfo($image, PATHINFO_FILENAME) . '.png';
 
-                //if thumbnail exist returns it
+                // if thumbnail exist returns it
                 $thumbnail = $rootPath . $thumbPath . $width . 'x' . $height . '_' . $type . '/' . $imageFilename;
 
                 $thumbnailPublicPath = storage_path('app/public' . $thumbnail);
@@ -66,34 +66,34 @@ class LaravelThumbnail
                     }
                     case 'resize':
                     {
-                        //stretched
+                        // stretched
                         $image->resize($width, $height);
                     }
                     case 'background':
                     {
                         $image->resize($width, $height, function ($constraint) {
-                            //keeps aspect ratio and sets black background
+                            // keeps aspect ratio and sets black background
                             $constraint->aspectRatio();
                             $constraint->upsize();
                         });
                     }
                     case 'resizeCanvas':
                     {
-                        $image->resizeCanvas($width, $height, 'center', false, 'rgba(0, 0, 0, 0)'); //gets the center part
+                        $image->resizeCanvas($width, $height, 'center', false, 'rgba(0, 0, 0, 0)'); // gets the center part
                     }
                 }
 
-                //Create the directory if it doesn't exist
+                // Create the directory if it doesn't exist
                 $thumbnailPublicDir = storage_path('app/public' . dirname($thumbnail));
 
                 if (!File::exists($thumbnailPublicDir)) {
                     File::makeDirectory($thumbnailPublicDir, 0775, true);
                 }
 
-                //Save the thumbnail, encoded as png
+                // Save the thumbnail, encoded as png
                 $image->save($thumbnailPublicPath);
 
-                //return the url of the thumbnail
+                // return the url of the thumbnail
                 return Storage::disk('public')->url($thumbnail);
 
             } else {
