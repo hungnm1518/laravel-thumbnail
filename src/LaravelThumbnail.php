@@ -18,44 +18,59 @@ class LaravelThumbnail
      * @param string $type fit - best fit possible for given width & height - by default | resize - exact resize of image | background - fit image perfectly keeping ratio and adding black background | resizeCanvas - keep only center
      * @return mixed
      */
-    public static function generate($image, $width = null, $height = null, $type = 'fit')
+    public static function generate($image, $width = null, $height = null, $type = 'fit'): string
     {
+        // Return default image if empty
 		if (empty($image)) {
 			return Storage::disk('public')->url(config('thumb.default_img'));
 		}
-		
+
+        // Configuration path
         $rootPath = config('thumb.root_path');
         $thumbPath = config('thumb.thumb_path');
 
+        // Remove the first path (symlink) from $image string
         $image = ltrim(substr($image, strpos($image, '/', 1)), '/');
-        $imagePublicPath = storage_path('app/public/' . $rootPath . $image);
 
-        // if path exists and is image
-        if (File::exists($imagePublicPath) && !File::isDirectory($imagePublicPath)) {
+        // remove extension and add png extension
+        $imageFilename = pathinfo($image, PATHINFO_FILENAME) . '.png';
+
+        // Thumbnail file
+        $thumbnail = $rootPath . $thumbPath . $width . 'x' . $height . '_' . $type . '/' . $imageFilename;
+
+        // Thumbnail full path
+        $thumbnailFileFullPath = storage_path('app/public' . $thumbnail);
+
+        /**
+         * Thumbnail exists, we will return it
+         */
+
+        if (File::exists($thumbnailFileFullPath)) {
+            return Storage::disk('public')->url($thumbnail);
+        }
+
+        /**
+         * Thumbnail does not exist, we will create it
+         */
+
+        // Image file full path
+        $imageFileFullPath = storage_path('app/public' . $rootPath . $image);
+
+        // if current image exists and it is an image
+        if (File::exists($imageFileFullPath) && !File::isDirectory($imageFileFullPath)) {
 
             $allowedMimeTypes = ['image/jpeg', 'image/gif', 'image/png'];
-            $contentType = mime_content_type($imagePublicPath);
+            $contentType = mime_content_type($imageFileFullPath);
 
+            // Check mimetypes
             if (in_array($contentType, $allowedMimeTypes)) {
                 // returns the original image if no width and height
                 if (is_null($width) && is_null($height)) {
                     return Storage::disk('public')->url($image);
                 }
 
-                // remove extension and add png extension
-                $imageFilename = pathinfo($image, PATHINFO_FILENAME) . '.png';
-
-                // if thumbnail exist returns it
-                $thumbnail = $rootPath . $thumbPath . $width . 'x' . $height . '_' . $type . '/' . $imageFilename;
-
-                $thumbnailPublicPath = storage_path('app/public' . $thumbnail);
-
-                if (File::exists($thumbnailPublicPath)) {
-                    return Storage::disk('public')->url($thumbnail);
-                }
-
                 // if thumbnail do not exist, we make it
-                $image = Image::make($imagePublicPath);
+                $image = Image::make($imageFileFullPath);
 
                 switch ($type) {
                     case 'fit':
@@ -84,22 +99,23 @@ class LaravelThumbnail
                 }
 
                 // Create the directory if it doesn't exist
-                $thumbnailPublicDir = storage_path('app/public' . dirname($thumbnail));
+                $thumbnailPath = storage_path('app/public' . dirname($thumbnail));
 
-                if (!File::exists($thumbnailPublicDir)) {
-                    File::makeDirectory($thumbnailPublicDir, 0775, true);
+                if (!File::exists($thumbnailPath)) {
+                    File::makeDirectory($thumbnailPath, 0775, true);
                 }
 
                 // Save the thumbnail, encoded as png
-                $image->save($thumbnailPublicPath);
+                $image->save($thumbnailFileFullPath);
 
                 // return the url of the thumbnail
                 return Storage::disk('public')->url($thumbnail);
-
             } else {
-                return Storage::disk('public')->url(config('thumb.default_img'));
+                // Return original image, if mimetypes is not defined
+                return $image;
             }
         } else {
+            // if image does not exist and return a default image
             return Storage::disk('public')->url(config('thumb.default_img'));
         }
     }
