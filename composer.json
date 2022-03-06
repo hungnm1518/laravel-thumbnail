@@ -8,8 +8,8 @@
     "Thumbnail"
   ],
   "require": {
-    "php": ">=7.4",
-    "illuminate/support": "^8.0",
+    "php": "^7.4|^8.0",
+    "illuminate/support": "^7.0|^8.0|^9.0",
     "intervention/image": "^2.5"
   },
   "homepage": "https://github.com/hungnm1518/laravel-thumbnail",
