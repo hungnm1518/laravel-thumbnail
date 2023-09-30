@@ -32,11 +32,14 @@ class LaravelThumbnail
         // Remove the first path (symlink) from $image string
         $image = ltrim(substr($image, strpos($image, '/', 1)), '/');
 
-        // remove extension and add png extension
-        $imageFilename = pathinfo($image, PATHINFO_FILENAME) . '.png';
-
+        // remove extension and add png extension to thumb image
+        $fileName = pathinfo($image, PATHINFO_FILENAME) . '.png';
+		
+		// Dir name
+		$dirName = pathinfo($image, PATHINFO_DIRNAME);
+		
         // Thumbnail file
-        $thumbnail = $rootPath . $thumbPath . $width . 'x' . $height . '_' . $type . '/' . $imageFilename;
+        $thumbnail = $rootPath . $thumbPath . $width . 'x' . $height . '_' . $type . '/' . $dirName . '/' . $fileName;
 
         // Thumbnail full path
         $thumbnailFileFullPath = storage_path('app/public' . $thumbnail);
