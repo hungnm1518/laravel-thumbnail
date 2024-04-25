@@ -8,7 +8,8 @@ Using Thumbnail facade you will get resized images' paths on the fly. If an imag
     1. composer require hungnm1518/laravel-thumbnail
     2. in config/app.php add in providers: HungNM\LaravelThumbnail\LaravelThumbnailServiceProvider::class
     3. in config/app.php add in aliases: 'Thumbnail' => HungNM\LaravelThumbnail\Facades\LaravelThumbnail::class
-    4. php artisan vendor:publish --tag=config
+    4. php artisan vendor:publish --provider="HungNM\LaravelThumbnail\LaravelThumbnailServiceProvider" --tag=config
+
     
 ## How to use
 
