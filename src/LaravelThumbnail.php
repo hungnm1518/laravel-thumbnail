@@ -4,7 +4,7 @@ namespace HungNM\LaravelThumbnail;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 
 class LaravelThumbnail
 {
@@ -73,7 +73,7 @@ class LaravelThumbnail
                 }
 
                 // if thumbnail do not exist, we make it
-                $image = Image::make($imageFileFullPath);
+                $image = Image::read($imageFileFullPath);
 
                 switch ($type) {
                     case 'fit':
@@ -96,8 +96,8 @@ class LaravelThumbnail
                         });
                     }
                     case 'resizeCanvas':
-                    {
-                        $image->resizeCanvas($width, $height, 'center', false, 'rgba(0, 0, 0, 0)'); // gets the center part
+                    {                        
+			$image->resizeCanvas($width, $height, 'ff0', 'center'); // gets the center part
                     }
                 }
 
